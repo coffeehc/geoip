@@ -3,7 +3,7 @@ package geoip
 
 import (
 	"fmt"
-	"logger"
+	"github.com/coffeehc/logger"
 	"net"
 	"os"
 )
