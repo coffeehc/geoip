@@ -10,16 +10,17 @@ import (
 map[city:map[geoname_id:5037649 names:map[de:Minneapolis en:Minneapolis es:Mineápolis fr:Minneapolis ja:ミネアポリス pt-BR:Minneapolis ru:Миннеаполис zh-CN:明尼阿波利斯]] continent:map[code:NA geoname_id:6255149 names:map[de:Nordamerika en:North America es:Norteamérica fr:Amérique du Nord ja:北アメリカ pt-BR:América do Norte ru:Северная Америка zh-CN:北美洲]] country:map[geoname_id:6252001 iso_code:US names:map[de:USA en:United States es:Estados Unidos fr:États-Unis ja:アメリカ合衆国 pt-BR:Estados Unidos ru:США zh-CN:美国]] location:map[latitude:44.9759 longitude:-93.2166 metro_code:613 time_zone:America/Chicago] postal:map[code:55414] registered_country:map[geoname_id:6252001 iso_code:US names:map[de:USA en:United States es:Estados Unidos fr:États-Unis ja:アメリカ合衆国 pt-BR:Estados Unidos ru:США zh-CN:美国]] subdivisions:[map[geoname_id:5037779 iso_code:MN names:map[en:Minnesota es:Minnesota ja:ミネソタ州 ru:Миннесота]]]]
 */
 type GeoIp_City struct {
-	Id        int     `json:"id"`
-	Ip        string  `json:"ip"`
-	City      string  `json:"city"`
-	Continent string  `json:"continent"`
-	Country   string  `json:"country"`
-	Postal    string  `json:"postal"`
-	IsoCode   string  `json:"isoCode"`
-	Latitude  float64 `json:"latitude"`
-	Longitude float64 `json:"longitude"`
-	TimeZone  string  `json:"timeZone"`
+	Id           int     `json:"id"`
+	Ip           string  `json:"ip"`
+	City         string  `json:"city"`
+	Continent    string  `json:"continent"`
+	Country      string  `json:"country"`
+	Postal       string  `json:"postal"`
+	IsoCode      string  `json:"isoCode"`
+	Latitude     float64 `json:"latitude"`
+	Longitude    float64 `json:"longitude"`
+	TimeZone     string  `json:"timeZone"`
+	Subdivisions string  `json:"subdivisions"`
 }
 
 func (this *IpDataBase) GetCityByIp(ip string, isoCode string) (*GeoIp_City, error) {
@@ -62,10 +63,12 @@ func (this *IpDataBase) GetCityByIp(ip string, isoCode string) (*GeoIp_City, err
 		value = value["names"].(map[interface{}]interface{})
 		city.Continent = getName(value, isoCode)
 	}
-	if node["country"] != nil {
+	if node["country"] != nil { //国家是有可能为空的
 		value = node["country"].(map[interface{}]interface{})
-		value = value["names"].(map[interface{}]interface{})
-		city.Country = getName(value, isoCode)
+		if value["names"] != nil {
+			value = value["names"].(map[interface{}]interface{})
+			city.Country = getName(value, isoCode)
+		}
 	}
 	if node["postal"] != nil {
 		value = node["postal"].(map[interface{}]interface{})
@@ -77,6 +80,15 @@ func (this *IpDataBase) GetCityByIp(ip string, isoCode string) (*GeoIp_City, err
 		city.Longitude = value["longitude"].(float64)
 		if value["time_zone"] != nil {
 			city.TimeZone = value["time_zone"].(string)
+		}
+	}
+	if node["subdivisions"] != nil {
+		values := node["subdivisions"].([]interface{})
+		if len(values) > 0 {
+			value = values[0].(map[interface{}]interface{})
+			if value["iso_code"] != nil {
+				city.Subdivisions = value["iso_code"].(string)
+			}
 		}
 	}
 	return city, nil
