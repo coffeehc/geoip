@@ -5,8 +5,9 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"github.com/coffeehc/logger"
 	"time"
+
+	"github.com/coffeehc/logger"
 )
 
 const (
@@ -28,9 +29,14 @@ const (
 	TYPE_FLOAT
 )
 
-var pointerValueOffset []int = []int{0, 0, 1 << 11, (1 << 19) + ((1) << 11), 0}
+var pointerValueOffset []int
 
-var _pointCache map[int]*entry_data_cache = make(map[int]*entry_data_cache)
+var pointCache map[int]*entry_data_cache
+
+func init() {
+	pointerValueOffset = []int{0, 0, 1 << 11, (1 << 19) + (1 << 11), 0}
+	pointCache = make(map[int]*entry_data_cache)
+}
 
 type decoder struct {
 	pointerBase  int
@@ -79,10 +85,10 @@ func (this *decoder) decode(offset int) (*entry_data, error) {
 		tmpEntry := this.decodePointer(ctrl, this.database.data[offset:], offset)
 		if v, ok := tmpEntry.node.(int); ok {
 			entry := new(entry_data)
-			pointCache := _pointCache[v]
-			if pointCache != nil {
-				entry.node = pointCache.node
-				entry.nodeType = pointCache.nodeType
+			pc := pointCache[v]
+			if pc != nil {
+				entry.node = pc.node
+				entry.nodeType = pc.nodeType
 			} else {
 				entry, err = this.decode(v)
 				if err != nil {
@@ -91,7 +97,7 @@ func (this *decoder) decode(offset int) (*entry_data, error) {
 				cache := new(entry_data_cache)
 				cache.node = entry.node
 				cache.nodeType = entry.nodeType
-				_pointCache[v] = cache
+				pointCache[v] = cache
 			}
 			entry.offsetNext = tmpEntry.offsetNext
 			return entry, nil
