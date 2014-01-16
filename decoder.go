@@ -31,17 +31,15 @@ const (
 
 var pointerValueOffset []int
 
-var pointCache map[int]*entry_data_cache
-
 func init() {
 	pointerValueOffset = []int{0, 0, 1 << 11, (1 << 19) + (1 << 11), 0}
-	pointCache = make(map[int]*entry_data_cache)
 }
 
 type decoder struct {
 	pointerBase  int
 	objectMapper map[string]interface{}
 	database     *IpDataBase
+	pointCache   map[int]*entry_data_cache
 }
 
 type entry_data_cache struct {
@@ -66,6 +64,8 @@ func newDecoder(database *IpDataBase, pointerBase int) *decoder {
 	d := new(decoder)
 	d.pointerBase = pointerBase
 	d.database = database
+	d.pointCache = make(map[int]*entry_data_cache)
+	d.pointCache[-1] = nil
 	return d
 }
 
@@ -85,7 +85,7 @@ func (this *decoder) decode(offset int) (*entry_data, error) {
 		tmpEntry := this.decodePointer(ctrl, this.database.data[offset:], offset)
 		if v, ok := tmpEntry.node.(int); ok {
 			entry := new(entry_data)
-			pc := pointCache[v]
+			pc := this.pointCache[v]
 			if pc != nil {
 				entry.node = pc.node
 				entry.nodeType = pc.nodeType
@@ -97,7 +97,7 @@ func (this *decoder) decode(offset int) (*entry_data, error) {
 				cache := new(entry_data_cache)
 				cache.node = entry.node
 				cache.nodeType = entry.nodeType
-				pointCache[v] = cache
+				this.pointCache[v] = cache
 			}
 			entry.offsetNext = tmpEntry.offsetNext
 			return entry, nil

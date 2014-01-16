@@ -3,9 +3,10 @@ package geoip
 
 import (
 	"fmt"
-	"github.com/coffeehc/logger"
 	"net"
 	"os"
+
+	"github.com/coffeehc/logger"
 )
 
 var DATA_SECTION_SEPARATOR_SIZE int = 16
