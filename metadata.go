@@ -1,9 +1,7 @@
 // metadata
 package geoip
 
-import (
-	"fmt"
-)
+import "fmt"
 
 type metadata struct {
 	binaryFormatMajorVersion int //uint16
@@ -72,7 +70,7 @@ func newMetadata(entry *entry_data) (*metadata, error) {
 			return nil, fmt.Errorf("nodeCount不是uint32类型:%v", data)
 		}
 		data = v["record_size"]
-		if v9, ok := data.(uint32); ok {
+		if v9, ok := data.(uint16); ok {
 			m.recordSize = int(v9)
 		} else {
 			return nil, fmt.Errorf("recordSize不是uint32类型:%v", data)

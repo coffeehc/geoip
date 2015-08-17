@@ -2,13 +2,14 @@
 package geoip
 
 import (
-	"github.com/coffeehc/logger"
-	"github.com/coffeehc/utils"
 	"testing"
+	"time"
+
+	"github.com/coffeehc/logger"
 )
 
 func TestFindMetadataStart(t *testing.T) {
-	database, err := NewIpDataBase("D:/work/goOther/GeoLite2-City.mmdb/GeoLite2-City.mmdb")
+	database, err := NewIpDataBase("/Users/coffee/coder/gowork/coffee/src/logagent/server/config/GeoLite2-City.mmdb")
 	if err != nil {
 		t.Fatalf("错误:%s", err)
 	}
@@ -18,7 +19,7 @@ func TestFindMetadataStart(t *testing.T) {
 	if err != nil {
 		t.Fatalf("搜索出现错误:%s", err)
 	} else {
-		logger.Infof("获取内容:%v", city)
+		logger.Info("获取内容:%v", city)
 	}
-	utils.WaitTimeOut(1)
+	time.Sleep(time.Second * 5)
 }

@@ -47,16 +47,16 @@ func NewIpDataBase(path string) (*IpDataBase, error) {
 	database.decoder = newDecoder(database, database.metadataStart)
 	entry, err := database.decoder.decode(database.metadataStart)
 	if err != nil {
-		logger.Errorf("解析出现异常:%s", err)
+		logger.Error("解析出现异常:%s", err)
 		return nil, err
 	}
 	database.metadata, err = newMetadata(entry)
 	if err != nil {
-		logger.Errorf("构建MetaData数据失败,%v", entry)
+		logger.Error("构建MetaData数据失败,%v", entry)
 		return nil, err
 	}
 	database.decoder = newDecoder(database, database.metadata.searchTreeSize+DATA_SECTION_SEPARATOR_SIZE)
-	logger.Infof("解析GeoIp数据库[%s]成功,metadata:%v", path, database.metadata)
+	logger.Info("解析GeoIp数据库[%s]成功,metadata:%v", path, database.metadata)
 	return database, nil
 }
 
@@ -80,7 +80,7 @@ FILE:
 func (this *IpDataBase) get(ip string) (*entry_data, error) {
 	pointer, err := this.findAddressInTree(ip)
 	if err != nil {
-		logger.Errorf("获取pointer失败,%s", err)
+		logger.Error("获取pointer失败,%s", err)
 		return nil, err
 	}
 	if pointer == 0 {
@@ -104,7 +104,7 @@ func (this *IpDataBase) findAddressInTree(ipAddr string) (int, error) {
 	bitLength := len(ip) * 8
 	record, err := this.startNode(bitLength)
 	if err != nil {
-		logger.Errorf("StartNode失败:原因:%s", err)
+		logger.Error("StartNode失败:原因:%s", err)
 		return 0, err
 	}
 	for i := 0; i < bitLength; i++ {

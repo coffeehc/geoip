@@ -129,12 +129,12 @@ func (this *decoder) decode(offset int) (*entry_data, error) {
 		for i := 0; i < size; i++ {
 			key, err := this.decode(offset)
 			if err != nil {
-				logger.Errorf("解析出错Key:%s", err)
+				logger.Error("解析出错Key:%s", err)
 				return nil, err
 			}
 			value, err := this.decode(key.offsetNext)
 			if err != nil {
-				logger.Errorf("解析出错Value:%s", err)
+				logger.Error("解析出错Value:%s", err)
 				return nil, err
 			}
 			m[key.node] = value.node
@@ -149,7 +149,7 @@ func (this *decoder) decode(offset int) (*entry_data, error) {
 		for i := 0; i < size; i++ {
 			value, err := this.decode(offset)
 			if err != nil {
-				logger.Errorf("解析出错Value:%s", err)
+				logger.Error("解析出错Value:%s", err)
 				return nil, err
 			}
 			a = append(a, value.node)
@@ -252,7 +252,7 @@ func get_double(p []byte) float64 {
 	var f float64
 	err := binary.Read(bytes.NewBuffer(p), binary.BigEndian, &f)
 	if err != nil {
-		logger.Errorf("解析float失败")
+		logger.Error("解析float失败")
 		return 0
 	}
 	return f
@@ -262,7 +262,7 @@ func get_float(p []byte) float32 {
 	var f float32
 	err := binary.Read(bytes.NewBuffer(p), binary.BigEndian, &f)
 	if err != nil {
-		logger.Errorf("解析float失败")
+		logger.Error("解析float失败")
 		return 0
 	}
 	return f
