@@ -1,9 +1,7 @@
 // geoip project geoip.go
 package geoip
 
-import (
-	"fmt"
-)
+import "fmt"
 
 /*
 格式:

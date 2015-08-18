@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"time"
 
 	"github.com/coffeehc/logger"
 )
@@ -176,7 +175,6 @@ func (this *decoder) decode(offset int) (*entry_data, error) {
 		if size > 4 {
 			return nil, fmt.Errorf("无效的数据类型")
 		}
-		time.Sleep(time.Millisecond * 100)
 		entry.node = uint32(get_uintX(this.database.data[offset:offset+size], 0, size))
 		break
 	case TYPE_INT32:
