@@ -1,11 +1,7 @@
 // geoip project geoip.go
 package geoip
 
-import (
-	"fmt"
-
-	"github.com/coffeehc/logger"
-)
+import "fmt"
 
 /*
 格式:
@@ -51,7 +47,6 @@ func (this *IpDataBase) GetCityByIp(ip string, isoCode string) (*GeoIp_City, err
 	city := new(GeoIp_City)
 	city.IsoCode = isoCode
 	city.Ip = ip
-	logger.Debug("%#v", entry)
 	var value map[interface{}]interface{}
 	node := entry.node.(map[interface{}]interface{})
 	if node["city"] != nil {
