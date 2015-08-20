@@ -1,7 +1,11 @@
 // geoip project geoip.go
 package geoip
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/coffeehc/logger"
+)
 
 /*
 格式:
@@ -19,6 +23,7 @@ type GeoIp_City struct {
 	Longitude    float64 `json:"longitude"`
 	TimeZone     string  `json:"timeZone"`
 	Subdivisions string  `json:"subdivisions"`
+	Area         string  `json:"area"`
 }
 
 func (this *IpDataBase) GetCityByIp(ip string, isoCode string) (*GeoIp_City, error) {
@@ -46,6 +51,7 @@ func (this *IpDataBase) GetCityByIp(ip string, isoCode string) (*GeoIp_City, err
 	city := new(GeoIp_City)
 	city.IsoCode = isoCode
 	city.Ip = ip
+	logger.Debug("%#v", entry)
 	var value map[interface{}]interface{}
 	node := entry.node.(map[interface{}]interface{})
 	if node["city"] != nil {
@@ -86,6 +92,10 @@ func (this *IpDataBase) GetCityByIp(ip string, isoCode string) (*GeoIp_City, err
 			value = values[0].(map[interface{}]interface{})
 			if value["iso_code"] != nil {
 				city.Subdivisions = value["iso_code"].(string)
+			}
+			if value["names"] != nil {
+				value = value["names"].(map[interface{}]interface{})
+				city.Area = getName(value, isoCode)
 			}
 		}
 	}
