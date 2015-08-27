@@ -30,7 +30,7 @@ func NewIpDataBase(path string) (*IpDataBase, error) {
 		return nil, err
 	}
 	fileSize := fileInfo.Size()
-	file, err := os.OpenFile(path, os.O_RDONLY, 0666)
+	file, err := os.OpenFile(path, os.O_RDONLY, 0444)
 	defer file.Close()
 	if err != nil {
 		return nil, err
