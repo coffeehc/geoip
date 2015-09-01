@@ -56,7 +56,8 @@ func NewIpDataBase(path string) (*IpDataBase, error) {
 		return nil, err
 	}
 	database.decoder = newDecoder(database, database.metadata.searchTreeSize+DATA_SECTION_SEPARATOR_SIZE)
-	logger.Info("解析GeoIp数据库[%s]成功,metadata:%v", path, database.metadata)
+	logger.Info("解析GeoIp数据库[%s]成功", path)
+	logger.Debug("metadata:%#v", database.metadata)
 	return database, nil
 }
 

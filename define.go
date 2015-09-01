@@ -28,8 +28,12 @@ func parseNode(data map[interface{}]interface{}, language string) *Node {
 	if value, ok := data["city"].(map[interface{}]interface{}); ok {
 		node.City = parseCity(value, language)
 	}
-	if value, ok := data["subdivisions"].(map[interface{}]interface{}); ok {
-		node.Subdivisions = parseSubdivisions(value, language)
+	if value, ok := data["subdivisions"].([]interface{}); ok {
+		if len(value) > 0 {
+			if v, ok1 := value[0].(map[interface{}]interface{}); ok1 {
+				node.Subdivisions = parseSubdivisions(v, language)
+			}
+		}
 	}
 	if value, ok := data["country"].(map[interface{}]interface{}); ok {
 		node.Country = parseCountry(value, language)
